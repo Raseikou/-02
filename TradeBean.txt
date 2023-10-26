@@ -1,0 +1,56 @@
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+public class TradeBean {
+    LocalDateTime tradeTime;
+    String companyCode;
+
+
+    int quantity;
+
+    BigDecimal unitPrice;
+    TradeType1 tradeType1;
+
+
+    public LocalDateTime getTradeTime() {
+        return tradeTime;
+    }
+
+    public void setTradeTime(LocalDateTime tradeTime) {
+        this.tradeTime = tradeTime;
+    }
+
+    public String getCompanyCode() {
+        return companyCode;
+    }
+
+    public void setCompanyCode(String companyCode) {
+        this.companyCode = companyCode;
+    }
+
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public BigDecimal getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(BigDecimal unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public TradeType1 getTradeType1() {
+        return tradeType1;
+    }
+
+    public void setTradeType1(TradeType1 tradeType1) {
+        this.tradeType1 = tradeType1;
+    }
+}

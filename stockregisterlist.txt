@@ -1,0 +1,5 @@
+Data	Code	Type	Quantity	Price
+1999-11-11 11:13	4523	BUY	1000	1
+1999-11-11 11:12	4523	BUY	1000	2
+
+

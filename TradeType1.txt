@@ -1,0 +1,13 @@
+public enum TradeType1 {
+    BUY,
+    SELL;
+    public static boolean isStringInTradeType(String transactionType) {
+        try {
+            TradeType1.valueOf(transactionType);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+}
+

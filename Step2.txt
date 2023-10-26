@@ -1,0 +1,52 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+public class Step2 {
+    public void information(){
+        List<Stock> stocks = new ArrayList<>();
+        Path csvFilePath= Paths.get(System.getProperty("user.dir"),"output.txt" );
+        System.out.println("|"+"============================================================="+"|");
+        System.out.printf("| %-4s | %-25s | %-8s | %-13s |", "Code","Product Name", "Market", "Shares Issued");
+        System.out.println("");
+        System.out.println("|"+"------"+"+"+"---------------------------"+"+"+"----------"+
+                "+"+"---------------"+"|");
+        boolean isFirstLine = true;
+        try (BufferedReader reader = Files.newBufferedReader(csvFilePath,StandardCharsets.UTF_8)) {
+            // 读取数据行并创建Stock对象
+            for (String line;(line= reader.readLine()) != null;) {
+                if (isFirstLine){
+                    isFirstLine=false;
+                    continue;
+                }
+                String[] data = line.split("\t");
+                Market market = Market.valueOf(data[2]);
+                   long shareIssued = Long.parseLong(data[3]);
+                    Stock stock = new Stock();
+                    stock.setCode(data[0]);
+                    stock.setProductName(data[1]);
+                    stock.setMarket(market);
+                    stock.setShareIssued(shareIssued);
+                    stocks.add(stock);
+            }
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+        final String DataFormat= "| %-4s | %-25s | %-8s | %,13d |\n";
+        for(Stock stock:stocks){
+            System.out.printf(DataFormat,stock.getCode(),
+                    (stock.getProductName().length() <= 25) ? stock.getProductName() : (stock.getProductName().substring(0, 25- 3) + "..."),
+                    stock.getMarket(),
+                    stock.getShareIssued());}
+
+
+        System.out.println("===============================================================");
+    }
+}

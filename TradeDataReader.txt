@@ -1,0 +1,74 @@
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
+public class TradeDataReader {
+    public void read(String csvFilepath) {
+        List<TradeBean> trades = new ArrayList<>();
+
+        String line;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFilepath))) {
+            // データの読み取り
+            System.out.println("|" + "============================================================" + "|");
+            System.out.printf("| %-16s | %-4s | %-8s | %-8s | %-10s |", "Time", "Code", "Type", "quantity", "price");
+            System.out.println(" ");
+            System.out.println("|" + "------------------" + "+" + "------" + "+" + "----------" + "+" + "----------" + "+" + "------------" +
+                    "|");
+            while ((line = br.readLine()) != null) {
+                //2023-09-26T14:30	0001	BUY	100	99
+                String[] data = line.split("\t");
+                if (5 > data.length) { // 必要なデータが存在するかをチェック
+                    continue;
+                }
+                if(data[0].equals("Data")){
+                    //表头忽略
+                    continue;
+                }
+                TradeBean item = new TradeBean();
+
+
+                item.setTradeTime(LocalDateTime.parse(data[0], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+                item.setCompanyCode(data[1]);
+                item.setTradeType1(TradeType1.valueOf(data[2]));
+                item.setQuantity(Integer.parseInt(data[3]));
+                item.setUnitPrice(new BigDecimal(data[4]));
+                trades.add(item);
+//                Collections.sort(trades, new Comparator<TradeBean>() {
+//                    @Override
+//                    public int compare(TradeBean o1, TradeBean o2) {
+//                        return o2.getTradeTime().compareTo(o2.getTradeTime());
+//                    }
+//                });
+            }
+        } catch (FileNotFoundException e)
+        {System.err.println("File Not Found");}
+        catch (IOException ex) {
+            System.out.println("読み取り失敗：読み取ったファイルが存在しない");
+        }
+        trades.sort(Comparator.comparing(TradeBean::getTradeTime));
+
+        final String DataFormat = "| %-16s | %-4s | %-8s | %-8s | %-10s |\n";//列幅を設定する
+
+
+        for (TradeBean tradebean : trades) {
+            System.out.printf(DataFormat,
+                    tradebean.getTradeTime().toString().replace("T", " "),
+                    tradebean.getCompanyCode(),
+                    tradebean.getTradeType1(),
+                    tradebean.getQuantity(),
+                    tradebean.getUnitPrice()
+            );
+        }
+        if (!trades.isEmpty()) {
+            System.out.println("==============================================================");
+        }
+
+    }
+}

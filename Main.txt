@@ -1,0 +1,63 @@
+import java.nio.file.Paths;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        boolean run = true;
+        String isRunning;
+        Scanner scanner = new Scanner(System.in); // 移动到do循环外部
+
+        while (run) {
+            System.out.println("系统启动");
+            System.out.println("请选择菜单。");
+            System.out.println("1.显示表");
+            System.out.println("2.登录股票");
+            System.out.println("3.登陆交易信息");
+            System.out.println("4.打印");
+            System.out.println("9.App结束");
+
+            do {
+                System.out.println("请输入：");
+                isRunning = scanner.nextLine(); // 使用外部定义的scanner对象来获取输入
+                switch (isRunning) {
+                    case "1":
+                    case "１":
+                        System.out.println("1被选择");
+                        Step2 stp = new Step2();
+                        stp.information();
+                        System.out.println("---");
+                        break;
+                    case "2":
+                    case "２":
+                        System.out.println("2被选择");
+                        Step3 stp3 = new Step3();
+                        stp3.input();
+                        System.out.println("---");
+                        break;
+                    case"3":
+                    case"３":
+                        System.out.println("3被选择");
+                        Step4 stp4 = new Step4();
+                        stp4.trade();
+                        break;
+                    case"4":
+                        System.out.println("4被选择");
+                        TradeDataReader stp5 = new TradeDataReader();
+                        String filePath= Paths.get(System.getProperty("user.dir"),"output.cvs" ).toString();
+                        stp5.read(filePath);
+                        break;
+                    case "9":
+                    case "９":
+                        System.out.println("app关闭");
+                        run = false;
+                        break;
+                    default:
+                        System.out.println("\"" + isRunning + "\"" + "不存在的菜单");
+                }
+            } while (!isRunning.equals("9") && !isRunning.equals("９") && !isRunning.equals("1") && !isRunning.equals("2")
+                    && !isRunning.equals("２") && !isRunning.equals("１"));
+        }
+
+        scanner.close(); // 关闭Scanner对象
+    }
+}
