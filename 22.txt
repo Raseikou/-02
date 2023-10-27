@@ -1,0 +1,62 @@
+public void print(String csvPath) {
+        //csvを読み取るメソッド
+        List<Trade> trades = trades(csvPath);
+        sort(trades);
+
+
+        System.out.println("|" + "======================================================================" + "|");
+        System.out.printf("| %-16s | %-4s | %-8s | %-10s | %-18s |", "Trade Time", "Code", "Type", "Quantity", "Unit Price");
+        System.out.println();
+        System.out.println("|" + "------------------" + "+" + "------" + "+" + "----------" + "+" + "------------" + "+" + "--------------------" +
+                "|");
+        //csvをプリントするメソッド
+        printStocks(trades);
+    }
+
+    public List<Trade> trades(String csvFilepath) {
+        List<Trade> trades = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFilepath))) {
+            // データの読み取り
+
+            for (String line; (line = br.readLine()) != null; ) {
+                String[] data = line.split("\t");
+                if (5 != data.length) { // 必要なデータが存在するかをチェック
+                    System.out.println("Error: Invalid data format in line: " + line);
+                    continue;
+                }
+                Trade item = new Trade();
+                item.setTradeTime(LocalDateTime.parse(data[0], DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm")));
+                item.setCode(data[1]);
+                item.setTradeType(TradeType.valueOf(data[2]));
+                item.setQuantity(Long.parseLong(data[3]));
+                item.setUnitPrice(new BigDecimal(data[4]));
+                trades.add(item);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("読み取り失敗：読み取ったファイルが存在しない");
+        } catch (IOException ex) {
+            System.out.println("ファイルの読み込みが失敗しました");
+        }
+
+        return trades;
+    }
+
+    void sort(List<Trade> trades) {
+        trades.sort(Comparator.comparing(Trade::getTradeTime).reversed());
+    }
+
+    void printStocks(List<Trade> trades) {
+        DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+        for (Trade tradeBean : trades) {
+            System.out.printf("| %-16s | %-4s | %-8s | %,10d | %18s |\n",//列幅を設定する,
+                    tradeBean.getTradeTime().toString().replace("T", " "),
+                    tradeBean.getCode(),
+                    tradeBean.getTradeType(),
+                    tradeBean.getQuantity(),
+                    decimalFormat.format(tradeBean.getUnitPrice())
+            );
+        }
+        if (!trades.isEmpty()) {
+            System.out.println("========================================================================");
+        }
+    }
